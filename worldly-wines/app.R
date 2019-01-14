@@ -13,23 +13,9 @@ library(readr)
 library(shinythemes)
 library(plotly)
 
-#load in data
+#load in cleaned data
 wines <- read_csv("data/winemag-data-130k-v2.csv", 
                   col_types = cols(X1 = col_skip()))
-
-#remove country NA data?
-wines <- wines %>% 
-      filter(!is.na(country))
-
-#create three quality categories
-wines <- wines %>% 
-      mutate(quality = ifelse(points < 86, "Low Quality", 
-                              ifelse(between(points,86,91), "Medium Quality", 
-                                     ifelse(points > 91, "High Quality", NA))))
-
-
-#change NA values to "Not recorded"
-
 
 ui <- fluidPage(
    
@@ -74,7 +60,6 @@ ui <- fluidPage(
       
 )
 
-
 server <- function(input, output, session) {
       
       #observe(print(input$country))
@@ -115,7 +100,7 @@ server <- function(input, output, session) {
       output$crossplot <- renderPlotly({
             
             p <- ggplot(wines_filtered(), aes(x = points, y = price)) +
-                  geom_point(aes(test = title))
+                  geom_jitter(aes(text = title))
             ggplotly(p)
       })
 }
