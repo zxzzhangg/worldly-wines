@@ -1,10 +1,11 @@
 #
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
+# Worldly Wines shiny app
 #
-# Find out more about building applications with Shiny here:
+# By Zixin Zhang and Evan Yathon
+# January 2019
 #
-#    http://shiny.rstudio.com/
+# This app allows the user to explore wine ratings and prices in various countries and provinces in the world.  
+# Hover information allows the user to further identify specific wines 
 #
 
 library(shiny)
@@ -101,11 +102,18 @@ server <- function(input, output, session) {
                is.null(input$variety)){wines %>% filter(country %in% input$country,
                                                         province %in% input$province,
                                                         quality %in% input$quality)
+                  
             } else if(is.null(input$variety)){wines %>% filter(country %in% input$country,
                                                                province %in% input$province,
                                                                quality %in% input$quality,
                                                                region_1 %in% input$region)
-            } else{
+                  
+            } else if(is.null(input$region)){wines %>% filter(country %in% input$country,
+                                                              province %in% input$province,
+                                                              quality %in% input$quality,
+                                                              region_1 %in% input$region)
+                  
+            }else{
                   wines %>% 
                         filter(country %in% input$country,
                                province %in% input$province,
@@ -120,8 +128,8 @@ server <- function(input, output, session) {
       
       output$crossplot <- renderPlotly({
             
-            p <- ggplot(wines_filtered(), aes(x = points, y = price)) +
-                  geom_jitter()
+            p <- ggplot(wines_filtered(), aes(x = points, y = price, colour = quality)) +
+                  geom_jitter(aes(text = title))
             ggplotly(p)
       })
       
