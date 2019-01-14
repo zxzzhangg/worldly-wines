@@ -61,7 +61,8 @@ ui <- fluidPage(
                   ),
                   checkboxGroupInput('quality',
                                      "Filter by Points Quality?",
-                                     choices = unique(wines$quality)
+                                     choices = unique(wines$quality),
+                                     selected = unique(wines$quality)
                   )
                   
             ),
@@ -76,11 +77,13 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
       
+      #observe(print(input$country))
+      
       # change province choices based on country
       observeEvent(input$country,{
             updateSelectizeInput(session,'province',
                                  choices = wines %>% 
-                                       filter(country == input$country) %>% 
+                                       filter(country %in% input$country) %>% 
                                        distinct(province))
       }) 
       
@@ -88,7 +91,7 @@ server <- function(input, output, session) {
       observeEvent(input$province,{
             updateSelectizeInput(session,'region',
                                  choices = wines %>% 
-                                       filter(province == input$province) %>% 
+                                       filter(province %in% input$province) %>% 
                                        distinct(region_1))
       }) 
       
@@ -97,15 +100,24 @@ server <- function(input, output, session) {
                    {
                          updateSelectizeInput(session,'variety',
                                               choices = wines %>% 
-                                                    filter(province == input$province,
-                                                           country == input$country,
-                                                           region_1 == input$region) %>% 
+                                                    filter(region_1 %in% input$region) %>% 
                                                     distinct(variety))
                    })
       
+      wines_filtered <- reactive(
+            wines %>% 
+                  filter(country %in% input$country,
+                         province %in% input$province,
+                         region_1 %in% input$region,
+                         quality %in% input$quality)
+      )
       
-      
-      output$crossplot <- renderPlotly()
+      output$crossplot <- renderPlotly({
+            
+            p <- ggplot(wines_filtered(), aes(x = points, y = price)) +
+                  geom_point(aes(test = title))
+            ggplotly(p)
+      })
 }
 
 # Run the application 
