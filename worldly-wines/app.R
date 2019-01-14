@@ -1,10 +1,11 @@
 #
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
+# Worldly Wines shiny app
 #
-# Find out more about building applications with Shiny here:
+# By Zixin Zhang and Evan Yathon
+# January 2019
 #
-#    http://shiny.rstudio.com/
+# This app allows the user to explore wine ratings and prices in various countries and provinces in the world.  
+# Hover information allows the user to further identify specific wines 
 #
 
 library(shiny)
@@ -17,6 +18,12 @@ library(plotly)
 wines <- read_csv("data/winemag-data-130k-v2.csv", 
                   col_types = cols(X1 = col_skip()))
 
+#break into good, bad average quality
+wines <- wines %>% 
+      mutate(quality = ifelse(points < 86, "Low Quality", 
+                              ifelse(between(points,86,91), "Medium Quality", 
+                                     ifelse(points > 91, "High Quality", NA))))
+
 ui <- fluidPage(
    
       theme = shinytheme("united"),
@@ -26,12 +33,12 @@ ui <- fluidPage(
       sidebarLayout(
             sidebarPanel(
                   selectizeInput('country', 
-                                 'Country Selection',
+                                 'Country Selection (Mandatory Input for Crossplot)',
                                  choices = unique(wines$country),
                                  multiple = TRUE
                   ),
                   selectizeInput('province', 
-                                 'Province Selection',
+                                 'Province Selection (Mandatory Input for Crossplot)',
                                  choices = NULL,
                                  multiple = TRUE
                   ),
@@ -62,7 +69,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
       
-      #observe(print(input$country))
+      observe(print(input$country))
       
       # change province choices based on country
       observeEvent(input$country,{
@@ -71,7 +78,7 @@ server <- function(input, output, session) {
                                        filter(country %in% input$country) %>% 
                                        distinct(province))
       }) 
-      
+            
       # change region choices based on province
       observeEvent(input$province,{
             updateSelectizeInput(session,'region',
@@ -90,16 +97,38 @@ server <- function(input, output, session) {
                    })
       
       wines_filtered <- reactive(
-            wines %>% 
-                  filter(country %in% input$country,
-                         province %in% input$province,
-                         region_1 %in% input$region,
-                         quality %in% input$quality)
+            
+            if(is.null(input$region) & 
+               is.null(input$variety)){wines %>% filter(country %in% input$country,
+                                                        province %in% input$province,
+                                                        quality %in% input$quality)
+                  
+            } else if(is.null(input$variety)){wines %>% filter(country %in% input$country,
+                                                               province %in% input$province,
+                                                               quality %in% input$quality,
+                                                               region_1 %in% input$region)
+                  
+            } else if(is.null(input$region)){wines %>% filter(country %in% input$country,
+                                                              province %in% input$province,
+                                                              quality %in% input$quality,
+                                                              region_1 %in% input$region)
+                  
+            }else{
+                  wines %>% 
+                        filter(country %in% input$country,
+                               province %in% input$province,
+                               region_1 %in% input$region,
+                               quality %in% input$quality,
+                               variety %in% input$variety)
+            }
+            
+            
+            
       )
       
       output$crossplot <- renderPlotly({
             
-            p <- ggplot(wines_filtered(), aes(x = points, y = price)) +
+            p <- ggplot(wines_filtered(), aes(x = points, y = price, colour = quality)) +
                   geom_jitter(aes(text = title))
             ggplotly(p)
       })
