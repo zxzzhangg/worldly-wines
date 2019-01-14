@@ -103,6 +103,8 @@ server <- function(input, output, session) {
                   geom_jitter(aes(text = title))
             ggplotly(p)
       })
+      
+      
 }
 
 # Run the application 
