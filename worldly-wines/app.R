@@ -22,6 +22,13 @@ wines <- wines %>%
       filter(!is.na(country))
 
 #create three quality categories
+wines <- wines %>% 
+      mutate(quality = ifelse(points < 86, "Low Quality", 
+                              ifelse(between(points,86,91), "Medium Quality", 
+                                     ifelse(points > 91, "High Quality", NA))))
+
+
+#change NA values to "Not recorded"
 
 
 ui <- fluidPage(
@@ -51,10 +58,16 @@ ui <- fluidPage(
                                  'Select a Variety of Wine',
                                  choices = NULL,
                                  multiple = TRUE
+                  ),
+                  checkboxGroupInput('quality',
+                                     "Filter by Points Quality?",
+                                     choices = unique(wines$quality)
                   )
                   
             ),
-            mainPanel()
+            mainPanel(
+                  plotlyOutput('crossplot')
+            )
             
       )
       
@@ -63,31 +76,36 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
       
+      # change province choices based on country
       observeEvent(input$country,{
             updateSelectizeInput(session,'province',
-                              choices = wines %>% 
-                                          filter(country == input$country) %>% 
-                                          distinct(province))
+                                 choices = wines %>% 
+                                       filter(country == input$country) %>% 
+                                       distinct(province))
       }) 
       
+      # change region choices based on province
       observeEvent(input$province,{
             updateSelectizeInput(session,'region',
-                              choices = wines %>% 
-                                    filter(province == input$province) %>% 
-                                    distinct(region_1))
+                                 choices = wines %>% 
+                                       filter(province == input$province) %>% 
+                                       distinct(region_1))
       }) 
       
-      observeEvent({input$province
-                    #input$country
-                    input$region},
-                  {
-            updateSelectizeInput(session,'variety',
-                              choices = wines %>% 
-                                    filter(province == input$province,
-                                           country == input$country,
-                                           region_1 == input$region) %>% 
-                                    distinct(variety))
-      })
+      # change variety choices based on region
+      observeEvent({input$region},
+                   {
+                         updateSelectizeInput(session,'variety',
+                                              choices = wines %>% 
+                                                    filter(province == input$province,
+                                                           country == input$country,
+                                                           region_1 == input$region) %>% 
+                                                    distinct(variety))
+                   })
+      
+      
+      
+      output$crossplot <- renderPlotly()
 }
 
 # Run the application 
