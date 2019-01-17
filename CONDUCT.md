@@ -1,16 +1,50 @@
-# Milestone 1 - Proposal
+# Contributor Covenant Code of Conduct
 
-## Overview
+## Policy Purpose
 
-When choosing a bottle of wine the region and variety can impact quality and price; liquor stores typically have wines sorted by country or region. Understanding the distributions of quality and price could help an average person or sommelier choose a country or region that fits their needs resulting in a better wine choice.  We propose building a shiny app that filters wines by country and region, which then shows related price and score distributions. In addition, a cross plot with hover capabilities will show price versus quality ratings and on hover will display more information about individual wines.
+The purpose of this code is to clarify and specify the high standard of conduct that is associated with ethical collaborative practices. In the interest of creating such an environment, we as contributors pledge that we will be dedicated to keeping the working environment harassment-free, regardless of gender, sexual orientation, body, size, disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation. Be kind and do not put anyone down.
 
-## Description of the data
-We will be visualizing a dataset of approximately 130,000 wine reviews. Each wine review has 14 associated variables including variety, location, winery, price, description and review details. Based on our purpose, we will only look at these 6 variables that describe the wine’s location (country, province), the rating of the wine on a scale of 1-100 (points), the cost of a bottle of the wine (price), the type of grapes used to make the wine (variety). By using the data, we will also derive a new variable representing the level of points of a wine (points level). There are three level of the variable, points level: bad (points < 86), average (86 <= points <= 91), and good (points > 91).
+## Our Standards
 
-## Usage scenario & tasks
-Katie is hosting an Argentinian themed dinner party and wants a well rated wine within a certain price range to pair with her Asado and Empanadas.  She uses the "Worldly Wines" app to filter the wine database down to Argentinian wines and is able to view the price and points distribution for all of the wines available.  She then further drills down to wines from the Mendoza Province, and only selects wines that have a "Good" point distribution.  Katie can see from the variety filter that there are quite a few varieties in this region, but decides on a Malbec and further filters the selection.  She then hovers over the cross plot with the remaining wines in her price range with a good points distribution.  The hover information tells her the name of the wine and other relevant information.  Armed with this knowledge, she is now prepared to go to the liquor store and retrieve the wine for her dinner party.
+Examples of behavior that contributes to creating a positive environment
+include:
 
-## Description of the app & sketch
-On the main page of the app there are two parts: on the left side is the dropdown list, and the right side are the visualizations. From the dropdown list, a user can filter out variables by location (i.e. US, California), by region (i.e. Napa Valley) and by variety (i.e. Pinot Noir). Based on different filters, users will see price and rating visualizations. This includes one price distribution graph coloured by points level, one histogram that displays the points distribution coloured by points level, and one scatter plot whose single point represents a wine with price and points in each axis. When clicking or hovering on each point, the user is able to see its title, variety and other information. Lastly, user has the option to view all the wines at a specific quality category.
+* Be friendly and welcoming
+* Using inclusive language
+* Be patient and respectful, especially with difference in opinions
+* Being respectful of differing viewpoints and experiences
+* Gracefully accepting constructive criticism
+* Focusing on what is best for the community
+* Showing empathy towards other community members
 
-![](img/sketch.png)
+Examples of unacceptable behavior by participants include:
+
+* Unconstructive criticism
+* Trolling, insulting/derogatory comments, and personal or political attacks
+* Public or private harassment
+* Publishing others' private information, such as a physical or electronic
+ address, without explicit permission
+
+## Our Responsibilities
+
+Project maintainers are responsible for clarifying the standards of acceptable
+behavior and are expected to take appropriate and fair corrective action in
+response to any instances of unacceptable behavior.
+
+Project maintainers have the right and responsibility to remove, edit, or
+reject comments, commits, code, wiki edits, issues, and other contributions
+that are not aligned to this Code of Conduct, or to ban temporarily or
+permanently any contributor for other behaviors that they deem inappropriate,
+threatening, offensive, or harmful.
+
+It is very important that we deal incidents publicly, so please report any unacceptable behaviors by opening up an issues on the project repository or by contacting a project maintainer.  
+
+## Attribution
+
+This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4,
+available at https://www.contributor-covenant.org/version/1/4/code-of-conduct.html
+
+[homepage]: https://www.contributor-covenant.org
+
+For answers to common questions about this code of conduct, see
+https://www.contributor-covenant.org/faq
