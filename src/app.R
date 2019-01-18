@@ -18,6 +18,11 @@ library(plotly)
 #break into good, bad average quality
 wines <- read.csv("../data/wines.csv")
 
+wines %>% 
+   filter(country == 'Canada') %>% 
+   distinct(province) -> de
+
+
 ui <- fluidPage(
    
       theme = shinytheme("united"),
@@ -29,7 +34,8 @@ ui <- fluidPage(
                   selectizeInput('country', 
                                  'Country Selection (Mandatory Input for Crossplot)',
                                  choices = unique(wines$country),
-                                 multiple = TRUE
+                                 multiple = TRUE,
+                                 selected = 'Canada'
                   ),
                   selectizeInput('province', 
                                  'Province Selection (Mandatory Input for Crossplot)',
@@ -54,9 +60,9 @@ ui <- fluidPage(
                   
             ),
             mainPanel(
-               plotlyOutput('crossplot'),
-               plotOutput('histplot_price'),
-               plotlyOutput('histplot_points')
+               plotlyOutput('histplot_price'),
+               plotlyOutput('histplot_points'),
+               plotlyOutput('crossplot')
             )
             
       )
@@ -72,7 +78,7 @@ server <- function(input, output, session) {
             updateSelectizeInput(session,'province',
                                  choices = wines %>% 
                                        filter(country %in% input$country) %>% 
-                                       distinct(province))
+                                       distinct(province), selected='British Columbia')
       }) 
             
       # change region choices based on province
@@ -107,9 +113,9 @@ server <- function(input, output, session) {
             } else if(is.null(input$region)){wines %>% filter(country %in% input$country,
                                                               province %in% input$province,
                                                               quality %in% input$quality,
-                                                              region_1 %in% input$region)
-                  
-            }else{
+                                                              variety %in% input$variety)
+                     
+            } else{
                   wines %>% 
                         filter(country %in% input$country,
                                province %in% input$province,
@@ -125,20 +131,24 @@ server <- function(input, output, session) {
       output$crossplot <- renderPlotly({
             
             p <- ggplot(wines_filtered(), aes(x = points, y = price, colour = quality)) +
-                  geom_jitter(aes(text = title))
+               geom_jitter(aes(text = title)) +
+               ggtitle("Price VS Points")
+                  
             ggplotly(p)
       })
       
-      output$histplot_price <- renderPlot({
-         p1 <- ggplot(wines_filtered(), aes(price, color=quality)) +
-            geom_density(aes(fill = quality), alpha = 0.3) 
-         p1
+      output$histplot_price <- renderPlotly({
+         p1 <- ggplot(wines_filtered(), aes(x = price, color=quality)) +
+            geom_density(aes(fill = quality), alpha = 0.3) +
+            ggtitle("Price Distribution")
+         ggplotly(p1)
       })
       
       
       output$histplot_points <- renderPlotly({
          p2 <- ggplot(wines_filtered(), aes(points, color = quality)) +
-            geom_bar(aes(fill = quality),position="dodge", alpha = 0.5)  
+            geom_bar(aes(fill = quality),position="dodge", alpha = 0.5) +
+            ggtitle("Points Distribution")  
          ggplotly(p2)
       })
       
