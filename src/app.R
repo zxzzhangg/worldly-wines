@@ -30,14 +30,14 @@ ui <- fluidPage(
             sidebarPanel(
                   # country selection; defaulted to Canada
                   selectizeInput('country', 
-                                 'Country Selection (Mandatory Input for Crossplot)',
+                                 'Country Selection (Mandatory Input)',
                                  choices = unique(wines$country),
                                  multiple = TRUE,
                                  selected = "Canada"
                   ),
                   # province selection; defaulted to British Columbia in server
                   selectizeInput('province', 
-                                 'Province Selection (Mandatory Input for Crossplot)',
+                                 'Province Selection (Mandatory Input)',
                                  choices = NULL,
                                  multiple = TRUE
                   ),
