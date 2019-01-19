@@ -16,7 +16,7 @@ library(plotly)
 
 
 #load cleaned data that was cleaned/modified using load_data.R
-wines <- read.csv("../data/wines.csv")
+wines <- read.csv("data/wines.csv")
 
 
 #create UI
