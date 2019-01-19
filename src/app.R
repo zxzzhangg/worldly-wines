@@ -63,10 +63,12 @@ ui <- fluidPage(
             ),
             mainPanel(
                   #three plot outputs
-               plotlyOutput('histplot_price'),
-               plotlyOutput('histplot_points'),
-               plotlyOutput('crossplot')
-            )
+                  fluidRow(splitLayout(cellWidths = c("50%", "50%"),
+                                       plotlyOutput('histplot_price'),
+                                       plotlyOutput('histplot_points'))
+                           
+                  ),
+                  fluidRow(plotlyOutput('crossplot')))
             
       )
       
