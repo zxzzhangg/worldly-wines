@@ -7,6 +7,9 @@
 ### Description
 `worldly-wines` contains code to clean loaded data which is then fed into a `shiny` application.  The application serves the purpose of exploring a large database of wines that have been rated and priced.  Dynamically exploring the data has the goal of helping to understand distributions and relationships of price and rating by region or variety of wine.
 
+### The App
+[Deployed Shiny App](https://evanyathon.shinyapps.io/worldly-wines/) hosted on shinyapps.io
+
 ### Directory
 - [Shiny App](src/app.R)
 - [Data Cleaning](load_data.R)
