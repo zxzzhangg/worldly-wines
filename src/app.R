@@ -29,7 +29,8 @@ ui <- fluidPage(
                   selectizeInput('country', 
                                  'Country Selection (Mandatory Input for Crossplot)',
                                  choices = unique(wines$country),
-                                 multiple = TRUE
+                                 multiple = TRUE,
+                                 selected = "Canada"
                   ),
                   selectizeInput('province', 
                                  'Province Selection (Mandatory Input for Crossplot)',
@@ -72,7 +73,8 @@ server <- function(input, output, session) {
             updateSelectizeInput(session,'province',
                                  choices = wines %>% 
                                        filter(country %in% input$country) %>% 
-                                       distinct(province))
+                                       distinct(province),
+                                 selected = "British Columbia")
       }) 
             
       # change region choices based on province
