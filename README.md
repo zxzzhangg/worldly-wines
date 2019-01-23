@@ -22,3 +22,10 @@ Data was sourced from [Kaggle](https://www.kaggle.com/zynicide/wine-reviews/data
 - "Acknowledgements
 The data was scraped from WineEnthusiast during the week of June 15th, 2017. The code for the scraper can be found here if you have any more specific questions about data collection that I didn't address.
 - UPDATE 11/24/2017 After feedback from users of the dataset I scraped the reviews again on November 22nd, 2017. This time around I collected the title of each review, which you can parse the year out of, the tasters name, and the taster's Twitter handle. This should also fix the duplicate entry issue."
+
+### Milestone 3
+Link to feedback for Shayne and Harjyot:
+https://github.com/UBC-MDS/Olympics_Medal_Exploration/issues/11
+
+Link to feedback for Marcelle and Sayanti:
+https://github.com/UBC-MDS/Mental_Health_Issue_Tracker/issues/9
