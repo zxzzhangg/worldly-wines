@@ -16,6 +16,7 @@
 - [Initial Proposal](proposal.md) - contains data description, an example usage case and initial app design
 - [Code of Conduct](CONDUCT.md) -adapted from the [Contributor Covenant](https://www.contributor-covenant.org/version/1/4/code-of-conduct.html)
 - [Milestone 2 Writeup](write.md)
+- [Milestone 2 Functionality](functionality.md)
 
 ### Data
 Data was sourced from [Kaggle](https://www.kaggle.com/zynicide/wine-reviews/data), in which the author states:
