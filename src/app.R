@@ -152,8 +152,8 @@ server <- function(input, output, session) {
       output$crossplot <- renderPlotly({
             
             p <- ggplot(wines_filtered(), aes(x = points, y = price, color = quality)) +
-               geom_jitter(aes(text =  title)) + theme(legend.position="bottom") +
-               ggtitle("Price VS Points")
+               geom_jitter(aes(text =  title), alpha = 0.5) + theme(legend.position="bottom") +
+               ggtitle("Price VS Points") + xlab("Rating (Points)") +ylab("Price")
                   
             ggplotly(p)
       })
@@ -161,8 +161,8 @@ server <- function(input, output, session) {
       output$histplot_price <- renderPlotly({
             
          p1 <- ggplot(wines_filtered(), aes(x = price, color = quality)) +
-            geom_density(aes(fill = quality), alpha = 0.3) + theme(legend.position="none") +
-            ggtitle("Price Distribution")
+            geom_density(aes(fill = quality), alpha = 0.5) + theme(legend.position="none") +
+            ggtitle("Price Distribution") + xlab("Price")
          
          ggplotly(p1)
       })
@@ -172,7 +172,7 @@ server <- function(input, output, session) {
    
          p2 <- ggplot(wines_filtered(), aes(points, color = quality)) +
             geom_bar(aes(fill = quality), position="dodge", alpha = 0.5) + theme(legend.position="none") +
-            ggtitle("Points Distribution")  
+            ggtitle("Rating Distribution")  + xlab("Rating (Points)")
          
          ggplotly(p2)
       })
