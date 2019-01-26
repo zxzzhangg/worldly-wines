@@ -75,22 +75,25 @@ ui <- fluidPage(
                   
             ),
             mainPanel(
-                  tabsetPanel(
-                        tabPanel("Explore Distributions of Prices and Ratings",
-                                 fluidRow(splitLayout(cellWidths = c("50%", "50%"),
-                                                      plotlyOutput('histplot_price'),
-                                                      plotlyOutput('histplot_points')))
-                        ),
-                        
-                        tabPanel("Explore the Relationship between Price and Rating",
-                                 plotlyOutput('crossplot')
-                        )
-                        
-                  ))
+               tabsetPanel(
+                  tabPanel("Explore Distributions of Prices and Ratings",
+                           fluidRow(splitLayout(cellWidths = c("40%", "65%"),
+                                                plotlyOutput('histplot_price'),
+                                                plotlyOutput('histplot_points')))
+                  ),
+                  
+                  tabPanel("Explore the Relationship between Price and Rating",
+                           plotlyOutput('crossplot')
+                  )
+                  
+               ))
             
       )
       
-      )
+)
+
+               
+      
 
 server <- function(input, output, session) {
       
@@ -191,7 +194,7 @@ server <- function(input, output, session) {
             
             p2 <- ggplot(wines_filtered(), aes(points, color = quality)) +
                   geom_bar(aes(fill = quality), position="dodge", alpha = 0.5) + 
-                  theme(legend.position="none") +
+                  theme( legend.text = element_text(size=7)) +
                   ggtitle("Rating Distribution")  + 
                   xlab("Rating (Points)")
             
