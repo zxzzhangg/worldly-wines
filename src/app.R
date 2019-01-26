@@ -151,10 +151,15 @@ server <- function(input, output, session) {
       output$crossplot <- renderPlotly({
             
             p <- ggplot(wines_filtered(), aes(x = points, y = price, color = quality)) +
-                  geom_jitter(aes(text =  title, ), alpha = 0.5) + 
+                  geom_jitter(aes(text =  title, 
+                                  label = variety, 
+                                  label2 = province,
+                                  label3 = region_1), 
+                              alpha = 0.5) + 
                   theme(legend.position="bottom") +
                   ggtitle("Price VS Points") + 
-                  xlab("Rating (Points)") +ylab("Price")
+                  xlab("Rating (Points)") +
+                  ylab("Price")
             
             ggplotly(p)
       })
