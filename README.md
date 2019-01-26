@@ -17,7 +17,7 @@
 - [Code of Conduct](CONDUCT.md) -adapted from the [Contributor Covenant](https://www.contributor-covenant.org/version/1/4/code-of-conduct.html)
 - [Milestone 2 Writeup](https://github.com/UBC-MDS/worldly-wines/blob/master/writeup.md)
 - [Milestone 2 Functionality](functionality.md)
-- [Milestone 3 Writeup](https://github.com/UBC-MDS/worldly-wines/blob/master/writeup_3.md)
+- [Milestone 3 Writeup](https://github.com/zxzzhangg/worldly-wines/blob/master/writeup_3.md)
 - Milestone 3 Feedbacks
    - [Link to feedback for Shayne and Harjyot](https://github.com/UBC-MDS/Olympics_Medal_Exploration/issues/11)
    - [Link to feedback for Marcelle and Sayanti](https://github.com/UBC-MDS/Mental_Health_Issue_Tracker/issues/9)
