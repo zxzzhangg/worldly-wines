@@ -72,17 +72,22 @@ ui <- fluidPage(
                   
             ),
             mainPanel(
-                  #three plot outputs
-                  fluidRow(splitLayout(cellWidths = c("50%", "50%"),
-                                       plotlyOutput('histplot_price'),
-                                       plotlyOutput('histplot_points'))
-                           
-                  ),
-                  fluidRow(plotlyOutput('crossplot')))
+                  tabsetPanel(
+                        tabPanel("histograms",
+                                 fluidRow(splitLayout(cellWidths = c("50%", "50%"),
+                                                      plotlyOutput('histplot_price'),
+                                                      plotlyOutput('histplot_points')))
+                        ),
+                        
+                        tabPanel("crossplot",
+                                 plotlyOutput('crossplot')
+                        )
+                        
+                  ))
             
       )
       
-)
+      )
 
 server <- function(input, output, session) {
       
