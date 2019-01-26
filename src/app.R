@@ -35,7 +35,7 @@ ui <- fluidPage(
             sidebarPanel(
                   # country selection; defaulted to Canada
                   pickerInput('country', 
-                              'Country Selection (Mandatory Input)',
+                              'Country Selection',
                               choices = unique(wines$country),
                               selected = "Canada"
                   ),
@@ -76,13 +76,13 @@ ui <- fluidPage(
             ),
             mainPanel(
                   tabsetPanel(
-                        tabPanel("histograms",
+                        tabPanel("Explore Distributions of Prices and Ratings",
                                  fluidRow(splitLayout(cellWidths = c("50%", "50%"),
                                                       plotlyOutput('histplot_price'),
                                                       plotlyOutput('histplot_points')))
                         ),
                         
-                        tabPanel("crossplot",
+                        tabPanel("Explore the Relationship between Price and Rating",
                                  plotlyOutput('crossplot')
                         )
                         
@@ -104,7 +104,10 @@ server <- function(input, output, session) {
                               choices = wines %>% 
                                     filter(country %in% input$country) %>%
                                     distinct(province),
-                              selected = "British Columbia")
+                              #selected = "British Columbia")
+                              selected = (wines %>% 
+                                    filter(country %in% input$country) %>%
+                                    distinct(province))[2,1])
       }) 
       
       # change region choices based on province
