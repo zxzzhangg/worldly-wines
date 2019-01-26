@@ -13,13 +13,13 @@ library(tidyverse)
 library(readr)
 library(shinythemes)
 library(plotly)
-
+library(shinyWidgets)
 library(shinythemes)
 
 
 #load cleaned data that was cleaned/modified using load_data.R
 
-wines <- read.csv("../data/wines.csv")
+wines <- read_csv("data/wines.csv")
 
 wines$quality <- with(wines, reorder(quality, points))
 wines$price_range <- with(wines, reorder(price_range, price))
@@ -34,29 +34,31 @@ ui <- fluidPage(
       sidebarLayout(
             sidebarPanel(
                   # country selection; defaulted to Canada
-                  selectizeInput('country', 
-                                 'Country Selection (Mandatory Input)',
-                                 choices = unique(wines$country),
-                                 multiple = TRUE,
-                                 selected = "Canada"
+                  pickerInput('country', 
+                              'Country Selection',
+                              choices = unique(wines$country),
+                              selected = "Canada"
                   ),
                   # province selection; defaulted to British Columbia in server
-                  selectizeInput('province', 
-                                 'Province Selection (Mandatory Input)',
-                                 choices = NULL,
-                                 multiple = TRUE
+                  pickerInput('province', 
+                              'Province Selection (Mandatory Input)',
+                              choices = NULL,
+                              multiple = TRUE,
+                              options = list(`actions-box` = TRUE)
                   ),
                   # region selection
-                  selectizeInput('region', 
+                  pickerInput('region', 
                                  'Region Selection',
                                  choices = NULL,
-                                 multiple = TRUE
+                                 multiple = TRUE,
+                              options = list(`actions-box` = TRUE)
                   ),
                   # variety selection
-                  selectizeInput('variety', 
+                  pickerInput('variety', 
                                  'Select a Variety of Wine',
                                  choices = NULL,
-                                 multiple = TRUE
+                                 multiple = TRUE,
+                              options = list(`actions-box` = TRUE)
                   ),
                   # quality selection
                   checkboxGroupInput('quality',
@@ -73,47 +75,56 @@ ui <- fluidPage(
                   
             ),
             mainPanel(
-                  #three plot outputs
-                  fluidRow(splitLayout(cellWidths = c("50%", "50%"),
-                                       plotlyOutput('histplot_price'),
-                                       plotlyOutput('histplot_points'))
-                           
-                  ),
-                  fluidRow(plotlyOutput('crossplot')))
+                  tabsetPanel(
+                        tabPanel("Explore Distributions of Prices and Ratings",
+                                 fluidRow(splitLayout(cellWidths = c("50%", "50%"),
+                                                      plotlyOutput('histplot_price'),
+                                                      plotlyOutput('histplot_points')))
+                        ),
+                        
+                        tabPanel("Explore the Relationship between Price and Rating",
+                                 plotlyOutput('crossplot')
+                        )
+                        
+                  ))
             
       )
       
-)
+      )
 
 server <- function(input, output, session) {
       
-      observe(print(input$country))
+      observe(print(wines %>% 
+                           filter(country %in% input$country) %>%
+                           distinct(province)))
       
       # change province choices based on country
       observeEvent(input$country,{
-            updateSelectizeInput(session,'province',
-                                 choices = wines %>% 
-                                       filter(country %in% input$country) %>%
-                                       distinct(province),
-                                 selected = "British Columbia")
+            updatePickerInput(session,'province',
+                              choices = wines %>% 
+                                    filter(country %in% input$country) %>%
+                                    distinct(province),
+                              #selected = "British Columbia")
+                              selected = (wines %>% 
+                                    filter(country %in% input$country) %>%
+                                    distinct(province))[2,1])
       }) 
-            
+      
       # change region choices based on province
       observeEvent(input$province,{
-            updateSelectizeInput(session,'region',
-                                 choices = wines %>% 
-                                       filter(province %in% input$province) %>% 
-                                       distinct(region_1))
+            updatePickerInput(session,'region',
+                              choices = wines %>% 
+                                    filter(province %in% input$province) %>% 
+                                    distinct(region_1))
       }) 
       
       # change variety choices based on region
-      observeEvent({input$region},
-                   {
-                         updateSelectizeInput(session,'variety',
-                                              choices = wines %>% 
-                                                    filter(region_1 %in% input$region) %>% 
-                                                    distinct(variety))
-                   })
+      observeEvent(input$region,{
+            updatePickerInput(session,'variety',
+                              choices = wines %>% 
+                                    filter(region_1 %in% input$region) %>% 
+                                    distinct(variety))
+      })
       #create data frame with options for no selection
       wines_filtered <- reactive(
             
@@ -152,29 +163,39 @@ server <- function(input, output, session) {
       output$crossplot <- renderPlotly({
             
             p <- ggplot(wines_filtered(), aes(x = points, y = price, color = quality)) +
-               geom_jitter(aes(text =  title), alpha = 0.5) + theme(legend.position="bottom") +
-               ggtitle("Price VS Points") + xlab("Rating (Points)") +ylab("Price")
-                  
+                  geom_jitter(aes(text =  title, 
+                                  label = variety, 
+                                  label2 = province,
+                                  label3 = region_1), 
+                              alpha = 0.5) + 
+                  theme(legend.position="bottom") +
+                  ggtitle("Price VS Points") + 
+                  xlab("Rating (Points)") +
+                  ylab("Price")
+            
             ggplotly(p)
       })
       
       output$histplot_price <- renderPlotly({
             
-         p1 <- ggplot(wines_filtered(), aes(x = price, color = quality)) +
-            geom_density(aes(fill = quality), alpha = 0.5) + theme(legend.position="none") +
-            ggtitle("Price Distribution") + xlab("Price")
-         
-         ggplotly(p1)
+            p1 <- ggplot(wines_filtered(), aes(x = price, color = quality)) +
+                  geom_density(aes(fill = quality), alpha = 0.5) + 
+                  theme(legend.position="none") +
+                  ggtitle("Price Distribution") + xlab("Price")
+            
+            ggplotly(p1)
       })
       
       
       output$histplot_points <- renderPlotly({
-   
-         p2 <- ggplot(wines_filtered(), aes(points, color = quality)) +
-            geom_bar(aes(fill = quality), position="dodge", alpha = 0.5) + theme(legend.position="none") +
-            ggtitle("Rating Distribution")  + xlab("Rating (Points)")
-         
-         ggplotly(p2)
+            
+            p2 <- ggplot(wines_filtered(), aes(points, color = quality)) +
+                  geom_bar(aes(fill = quality), position="dodge", alpha = 0.5) + 
+                  theme(legend.position="none") +
+                  ggtitle("Rating Distribution")  + 
+                  xlab("Rating (Points)")
+            
+            ggplotly(p2)
       })
       
       
