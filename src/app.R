@@ -13,13 +13,13 @@ library(tidyverse)
 library(readr)
 library(shinythemes)
 library(plotly)
-
+library(shinyWidgets)
 library(shinythemes)
 
 
 #load cleaned data that was cleaned/modified using load_data.R
 
-wines <- read.csv("../data/wines.csv")
+wines <- read.csv("data/wines.csv")
 
 wines$quality <- with(wines, reorder(quality, points))
 wines$price_range <- with(wines, reorder(price_range, price))
@@ -34,16 +34,17 @@ ui <- fluidPage(
       sidebarLayout(
             sidebarPanel(
                   # country selection; defaulted to Canada
-                  selectizeInput('country', 
-                                 'Country Selection (Mandatory Input)',
-                                 choices = unique(wines$country),
-                                 selected = "Canada"
+                  selectInput('country', 
+                              'Country Selection (Mandatory Input)',
+                              choices = unique(wines$country),
+                              selected = "Canada"
                   ),
                   # province selection; defaulted to British Columbia in server
-                  selectizeInput('province', 
-                                 'Province Selection (Mandatory Input)',
-                                 choices = NULL,
-                                 multiple = TRUE
+                  pickerInput('province', 
+                              'Province Selection (Mandatory Input)',
+                              choices = NULL,
+                              multiple = TRUE,
+                              options = list(`actions-box` = TRUE)
                   ),
                   # region selection
                   selectizeInput('region', 
@@ -91,11 +92,13 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
       
-      observe(print(input$country))
+      observe(print(wines %>% 
+                          filter(country %in% input$country) %>%
+                          distinct(province)))
       
       # change province choices based on country
       observeEvent(input$country,{
-            updateSelectizeInput(session,'province',
+            updatePickerInput(session,'province',
                                  choices = wines %>% 
                                        filter(country %in% input$country) %>%
                                        distinct(province),
