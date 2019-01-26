@@ -19,7 +19,7 @@ library(shinythemes)
 
 #load cleaned data that was cleaned/modified using load_data.R
 
-wines <- read.csv("data/wines.csv")
+wines <- read_csv("data/wines.csv")
 
 wines$quality <- with(wines, reorder(quality, points))
 wines$price_range <- with(wines, reorder(price_range, price))
@@ -34,7 +34,7 @@ ui <- fluidPage(
       sidebarLayout(
             sidebarPanel(
                   # country selection; defaulted to Canada
-                  selectInput('country', 
+                  pickerInput('country', 
                               'Country Selection (Mandatory Input)',
                               choices = unique(wines$country),
                               selected = "Canada"
@@ -47,16 +47,18 @@ ui <- fluidPage(
                               options = list(`actions-box` = TRUE)
                   ),
                   # region selection
-                  selectizeInput('region', 
+                  pickerInput('region', 
                                  'Region Selection',
                                  choices = NULL,
-                                 multiple = TRUE
+                                 multiple = TRUE,
+                              options = list(`actions-box` = TRUE)
                   ),
                   # variety selection
-                  selectizeInput('variety', 
+                  pickerInput('variety', 
                                  'Select a Variety of Wine',
                                  choices = NULL,
-                                 multiple = TRUE
+                                 multiple = TRUE,
+                              options = list(`actions-box` = TRUE)
                   ),
                   # quality selection
                   checkboxGroupInput('quality',
@@ -93,34 +95,33 @@ ui <- fluidPage(
 server <- function(input, output, session) {
       
       observe(print(wines %>% 
-                          filter(country %in% input$country) %>%
-                          distinct(province)))
+                           filter(country %in% input$country) %>%
+                           distinct(province)))
       
       # change province choices based on country
       observeEvent(input$country,{
             updatePickerInput(session,'province',
-                                 choices = wines %>% 
-                                       filter(country %in% input$country) %>%
-                                       distinct(province),
-                                 selected = "British Columbia")
+                              choices = wines %>% 
+                                    filter(country %in% input$country) %>%
+                                    distinct(province),
+                              selected = "British Columbia")
       }) 
-            
+      
       # change region choices based on province
       observeEvent(input$province,{
-            updateSelectizeInput(session,'region',
-                                 choices = wines %>% 
-                                       filter(province %in% input$province) %>% 
-                                       distinct(region_1))
+            updatePickerInput(session,'region',
+                              choices = wines %>% 
+                                    filter(province %in% input$province) %>% 
+                                    distinct(region_1))
       }) 
       
       # change variety choices based on region
-      observeEvent({input$region},
-                   {
-                         updateSelectizeInput(session,'variety',
-                                              choices = wines %>% 
-                                                    filter(region_1 %in% input$region) %>% 
-                                                    distinct(variety))
-                   })
+      observeEvent(input$region,{
+            updatePickerInput(session,'variety',
+                              choices = wines %>% 
+                                    filter(region_1 %in% input$region) %>% 
+                                    distinct(variety))
+      })
       #create data frame with options for no selection
       wines_filtered <- reactive(
             
