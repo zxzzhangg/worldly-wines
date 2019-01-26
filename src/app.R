@@ -37,7 +37,6 @@ ui <- fluidPage(
                   selectizeInput('country', 
                                  'Country Selection (Mandatory Input)',
                                  choices = unique(wines$country),
-                                 multiple = TRUE,
                                  selected = "Canada"
                   ),
                   # province selection; defaulted to British Columbia in server
@@ -152,29 +151,34 @@ server <- function(input, output, session) {
       output$crossplot <- renderPlotly({
             
             p <- ggplot(wines_filtered(), aes(x = points, y = price, color = quality)) +
-               geom_jitter(aes(text =  title), alpha = 0.5) + theme(legend.position="bottom") +
-               ggtitle("Price VS Points") + xlab("Rating (Points)") +ylab("Price")
-                  
+                  geom_jitter(aes(text =  title, ), alpha = 0.5) + 
+                  theme(legend.position="bottom") +
+                  ggtitle("Price VS Points") + 
+                  xlab("Rating (Points)") +ylab("Price")
+            
             ggplotly(p)
       })
       
       output$histplot_price <- renderPlotly({
             
-         p1 <- ggplot(wines_filtered(), aes(x = price, color = quality)) +
-            geom_density(aes(fill = quality), alpha = 0.5) + theme(legend.position="none") +
-            ggtitle("Price Distribution") + xlab("Price")
-         
-         ggplotly(p1)
+            p1 <- ggplot(wines_filtered(), aes(x = price, color = quality)) +
+                  geom_density(aes(fill = quality), alpha = 0.5) + 
+                  theme(legend.position="none") +
+                  ggtitle("Price Distribution") + xlab("Price")
+            
+            ggplotly(p1)
       })
       
       
       output$histplot_points <- renderPlotly({
-   
-         p2 <- ggplot(wines_filtered(), aes(points, color = quality)) +
-            geom_bar(aes(fill = quality), position="dodge", alpha = 0.5) + theme(legend.position="none") +
-            ggtitle("Rating Distribution")  + xlab("Rating (Points)")
-         
-         ggplotly(p2)
+            
+            p2 <- ggplot(wines_filtered(), aes(points, color = quality)) +
+                  geom_bar(aes(fill = quality), position="dodge", alpha = 0.5) + 
+                  theme(legend.position="none") +
+                  ggtitle("Rating Distribution")  + 
+                  xlab("Rating (Points)")
+            
+            ggplotly(p2)
       })
       
       
