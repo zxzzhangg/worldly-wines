@@ -80,7 +80,6 @@ ui <- fluidPage(
                                  plotlyOutput('histplot_price') ,
                                  plotlyOutput('histplot_points', width = "65%")                  
                         ),
-                        
                         tabPanel("Explore the Relationship between Price and Rating",
                                  plotlyOutput('crossplot')
                         )
@@ -174,9 +173,9 @@ server <- function(input, output, session) {
       
       output$histplot_price <- renderPlotly({
             
-            p1 <- ggplot(wines_filtered(), aes(x = price, color = quality)) +
-                  geom_density(aes(color = quality, y = ..count..), size = 2, alpha = 0.3) + 
-                  theme(legend.position="none") +
+            p1 <- ggplot(wines_filtered(), aes(x = price, color = quality)) + 
+                  geom_freqpoly(bins = 16, alpha = 0.5, size = 1.5)  +
+                  theme(legend.text = element_text(size=10)) +
                   ggtitle("Price Distribution") + xlab("Price")
             
             ggplotly(p1)
@@ -187,13 +186,12 @@ server <- function(input, output, session) {
             
             p2 <- ggplot(wines_filtered(), aes(points, color = quality)) +
                   geom_bar(aes(fill = quality), position="dodge", alpha = 0.5) + 
-                  theme(legend.text = element_text(size=10)) +
+                  theme(legend.position="none") +
                   ggtitle("Rating Distribution")  + 
                   xlab("Rating (Points)")
             
             ggplotly(p2)
       })
-      
       
 }
 
