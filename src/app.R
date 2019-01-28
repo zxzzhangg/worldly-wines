@@ -16,6 +16,16 @@ library(plotly)
 library(shinyWidgets)
 library(shinythemes)
 
+#intro text
+intro_text <- "<h3>Introduction</h3>
+
+Welcome to the Worldly Wines shiny app!  The purpose of this app is to let users explore wine ratings and prices in different locations around the world.  Please note that a country and region selection are mandatory for visualizations to appear in the interest of responsiveness.<br/><br/>
+
+On the left are several filters to explore different countries, provinces, regions and varieties of wine.  In the above tabs, price and rating distributions show the number of wines that are a particular price or ratings.  A usage scenario is presented below to help you find your way!<br/><br/>
+
+
+<h3>Usage Scenario</h3>
+Katie is hosting an Argentinian themed dinner party and wants a well rated wine within a certain price range to pair with her Asado and Empanadas. She uses the 'Worldly Wines' app select Argentinian wines and is able to view the price and rating distributions for all of the wines available. She then further drills down to wines from the Mendoza Province, and only selects wines that have a high quality rating. Katie can see from the variety filter that there are quite a few varieties in this region, but decides on a Malbec and further filters the selection. She then hovers over the cross plot with the remaining wines in her price range with a good points distribution. The hover information tells her the name of the wine and other relevant information. Armed with this knowledge, she is now prepared to go to the liquor store and retrieve the wine for her dinner party."
 
 #load cleaned data that was cleaned/modified using load_data.R
 
@@ -55,9 +65,9 @@ ui <- fluidPage(
                   ),
                   # variety selection
                   pickerInput('variety', 
-                                 'Select a Variety of Wine',
-                                 choices = NULL,
-                                 multiple = TRUE,
+                              'Select a Variety of Wine',
+                              choices = NULL,
+                              multiple = TRUE,
                               options = list(`actions-box` = TRUE)
                   ),
                   # quality selection
@@ -75,28 +85,26 @@ ui <- fluidPage(
                   
             ),
             mainPanel(
-               tabsetPanel(
-                  tabPanel("Explore Distributions of Prices and Ratings",
-                           plotlyOutput('histplot_price') ,
-                           plotlyOutput('histplot_points', width = "65%")                  
-                  ),
-                  
-                  tabPanel("Explore the Relationship between Price and Rating",
-                           plotlyOutput('crossplot')
-                  )
-               ))
+                  tabsetPanel(
+                        tabPanel("Introduction and Usage",
+                                 htmlOutput("description")),
+                        tabPanel("Explore Distributions of Prices and Ratings",
+                                 plotlyOutput('histplot_price') ,
+                                 plotlyOutput('histplot_points', width = "65%")                  
+                        ),
+                        tabPanel("Explore the Relationship between Price and Rating",
+                                 plotlyOutput('crossplot')
+                        )
+                  ))
       )
 )
 
 
-               
-      
-
 server <- function(input, output, session) {
       
-      observe(print(wines %>% 
-                           filter(country %in% input$country) %>%
-                           distinct(province)))
+      #observe(print(wines %>% 
+      #                     filter(country %in% input$country) %>%
+      #                     distinct(province)))
       
       # change province choices based on country
       observeEvent(input$country,{
@@ -156,9 +164,13 @@ server <- function(input, output, session) {
                                price_range %in% input$price_range)
             }
             
-            #wines_filtered()$quality <- with(wines_filtered(), reorder(quality, points))  
             
       )
+      
+      output$description <- renderText({
+            HTML(intro_text)
+      })
+      
       
       output$crossplot <- renderPlotly({
             
@@ -197,7 +209,6 @@ server <- function(input, output, session) {
             
             ggplotly(p2)
       })
-      
       
 }
 
