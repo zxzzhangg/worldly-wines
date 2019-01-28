@@ -55,9 +55,9 @@ ui <- fluidPage(
                   ),
                   # variety selection
                   pickerInput('variety', 
-                                 'Select a Variety of Wine',
-                                 choices = NULL,
-                                 multiple = TRUE,
+                              'Select a Variety of Wine',
+                              choices = NULL,
+                              multiple = TRUE,
                               options = list(`actions-box` = TRUE)
                   ),
                   # quality selection
@@ -75,25 +75,19 @@ ui <- fluidPage(
                   
             ),
             mainPanel(
-               tabsetPanel(
-                  tabPanel("Explore Distributions of Prices and Ratings",
-                           fluidRow(splitLayout(cellWidths = c("40%", "65%"),
-                                                plotlyOutput('histplot_price'),
-                                                plotlyOutput('histplot_points')))
-                  ),
-                  
-                  tabPanel("Explore the Relationship between Price and Rating",
-                           plotlyOutput('crossplot')
-                  )
-                  
-               ))
-            
+                  tabsetPanel(
+                        tabPanel("Explore Distributions of Prices and Ratings",
+                                 plotlyOutput('histplot_price') ,
+                                 plotlyOutput('histplot_points', width = "65%")                  
+                        ),
+                        
+                        tabPanel("Explore the Relationship between Price and Rating",
+                                 plotlyOutput('crossplot')
+                        )
+                  ))
       )
-      
 )
 
-               
-      
 
 server <- function(input, output, session) {
       
@@ -159,7 +153,6 @@ server <- function(input, output, session) {
                                price_range %in% input$price_range)
             }
             
-            #wines_filtered()$quality <- with(wines_filtered(), reorder(quality, points))  
             
       )
       
@@ -182,7 +175,7 @@ server <- function(input, output, session) {
       output$histplot_price <- renderPlotly({
             
             p1 <- ggplot(wines_filtered(), aes(x = price, color = quality)) +
-                  geom_density(aes(fill = quality), alpha = 0.5) + 
+                  geom_density(aes(color = quality, y = ..count..), size = 2, alpha = 0.3) + 
                   theme(legend.position="none") +
                   ggtitle("Price Distribution") + xlab("Price")
             
@@ -194,7 +187,7 @@ server <- function(input, output, session) {
             
             p2 <- ggplot(wines_filtered(), aes(points, color = quality)) +
                   geom_bar(aes(fill = quality), position="dodge", alpha = 0.5) + 
-                  theme( legend.text = element_text(size=7)) +
+                  theme(legend.text = element_text(size=10)) +
                   ggtitle("Rating Distribution")  + 
                   xlab("Rating (Points)")
             
