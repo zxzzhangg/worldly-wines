@@ -13,7 +13,7 @@
 ### Directory
 - [Shiny App](src/app.R)
 - [Data Cleaning](src/load_data.R)
-- [Initial Proposal](doc/proposal.md) - contains data description, an example usage case and initial app design
+- [Initial Proposal](doc/Proposal.md) - contains data description, an example usage case and initial app design
 - [Code of Conduct](CONDUCT.md) -adapted from the [Contributor Covenant](https://www.contributor-covenant.org/version/1/4/code-of-conduct.html)
 - [Milestone 2 Writeup](doc/writeup.md)
 - [Milestone 2 Functionality](doc/functionality.md)
